@@ -1,4 +1,5 @@
-###Latest news:
+### Latest news:
+
 2020: 0.9.6 is now the current development version (in master for now),
 use TBK fork if you want to use a stable checkout now, but use this repository
 if you want to contribute to AQEMU's future.
@@ -15,6 +16,7 @@ I was working on those features years ago, when I had to stop due various reason
 but now I plan to bring the work to an end, hopefully with the help of the community.
 
 Example how to build using meson/ninja:
+
 ```
 meson builddir
 cd builddir
@@ -59,9 +61,22 @@ Dependencies:
  - Qt5DBus
  - LibVNCServer
 
-
 ---
 
 As an alternative to cmake the meson build system is also supported:
 https://github.com/mesonbuild/meson
 
+
+## OpenBSD dependencies
+
+Install following packages:
+
+```bash
+$ doas pkg_add meson libvncserver qt5
+```
+
+## OpenBSD problem with cmake
+
+Since [OpenBSD Qt port stores the libs in a different directory](https://openports.se/x11/qt5/qtbase), the last stage,
+linking fails. In case to quickly fix until a permanent fix, edit `builddir/build.ninja`
+and add `-L /usr/local/lib/qt5` flag prior to `-lQt5Core`.
