@@ -2669,6 +2669,65 @@ QStringList System_Info::Get_Host_CDROM_List()
 
 #endif // Linux
 
+#ifdef Q_OS_OPENBSD
+
+#include <sys/sysctl.h>
+#include <sys/vmmeter.h>
+#include <unistd.h>
+#include <QDir>
+#include <QFileInfoList>
+
+void System_Info::Get_Free_Memory_Size( int &allRAM, int &freeRAM )
+{
+    int mib[2];
+    int64_t all_ram;
+    size_t len;
+
+    mib[0] = CTL_HW;
+    mib[1] = HW_PHYSMEM64;
+    len = sizeof(all_ram);
+    if (sysctl(mib, 2, &all_ram, &len, NULL, 0) == -1)
+		AQError( "void  System_Info::Get_Free_Memory_Size( int &allRAM, int &freeRAM )",
+				 "Cannot Get Information on Memory!" );
+
+    struct vmtotal vmstat;
+    mib[0] = CTL_VM;
+    mib[1] = VM_METER;
+    len = sizeof(vmstat);
+    if (sysctl(mib, 2, &vmstat, &len, NULL, 0) == -1)
+        AQError( "void  System_Info::Get_Free_Memory_Size( int &allRAM, int &freeRAM )",
+				 "Cannot Get Information on Virtual Memory!" );
+
+	int page_size = getpagesize();
+    int64_t free_ram = all_ram - ((int64_t)vmstat.t_avm * page_size);    
+
+    allRAM = (int)(all_ram / 1024.0 / 1024.0);
+	freeRAM = (int)(free_ram / 1024.0 / 1024.0);
+}
+
+QStringList System_Info::Get_Host_FDD_List()
+{
+    AQError ("System_Info::Get_Host_FDD_List()", "Not implemented!" );
+	QStringList tmp_list = QStringList();
+	return tmp_list;
+}
+
+QStringList System_Info::Get_Host_CDROM_List()
+{
+    AQError ("System_Info::Get_Host_CDROM_List()", "Not implemented!" );
+	QStringList tmp_list = QStringList();    
+	return tmp_list;
+}
+
+bool System_Info::Update_Host_USB()
+{
+	AQError( "System_Info::Update_Host_USB()",
+			 "Not implemented!" );
+	return false;
+}
+
+#endif // OpenBSD
+
 #ifdef Q_OS_FREEBSD
 
 #include <sys/sysctl.h>

@@ -41,6 +41,12 @@ extern "C" {
 #include <rfb/rfbclient.h>
 }
 
+#if defined(__OpenBSD__)
+    #define TCP_KEEPINTVL 512
+    #define TCP_KEEPIDLE 256
+    #define TCP_KEEPCNT 1024
+#endif
+
 class ClientEvent
 {
 public:
