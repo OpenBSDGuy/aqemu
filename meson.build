@@ -163,12 +163,19 @@ prep = qt5.preprocess(
                     ui_files : aqemu_ui,
                     qresources : aqemu_resources,
                     include_directories : incdir)
-
-q5exe = executable('aqemu',
-                    sources : [aqemu_sources, prep],
-                    dependencies : [qt5dep, vncclient],
-                    include_directories : incdir, install : true)
-
+if host_machine.system() == 'openbsd'
+  message('Building for OpenBSD')
+  q5exe = executable('aqemu',
+                      sources : [aqemu_sources, prep],
+                      dependencies : [qt5dep, vncclient],
+                      include_directories : incdir, install : true,
+                      link_args: '-L/usr/local/lib/qt5')
+else
+  q5exe = executable('aqemu',
+                      sources : [aqemu_sources, prep],
+                      dependencies : [qt5dep, vncclient],
+                      include_directories : incdir, install : true)
+endif
 install_man('resources/docs/aqemu.1')
 
 install_subdir('resources/os_icons/', install_dir : 'share/aqemu')
