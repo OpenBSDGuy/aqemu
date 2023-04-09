@@ -1,82 +1,60 @@
-### Latest news:
+# AQEMU
 
-2020: 0.9.6 is now the current development version (in master for now),
-use TBK fork if you want to use a stable checkout now, but use this repository
-if you want to contribute to AQEMU's future.
-Building using meson/ninja is recommended now.
-See the changelog for all the new features that will work in the next stable
-release, I'm most exciting about AQEMU being turned into a manager for VM services.
-This means you can close the AQEMU UI and your VMs will keep running, also you
-can restart the UI and manage running VMs you previously started with AQEMU.
-And even better, you're able to start/stop VMs from the command line without
-the need for a UI. Giving you a lot more flexibility, and hopefully increasing
-the audience for AQEMU. As you may have guessed there are still many issues with this
-new set of features, therefore a stable release can't be provided currently.
-I was working on those features years ago, when I had to stop due various reasons,
-but now I plan to bring the work to an end, hopefully with the help of the community.
+AQEMU is a graphical frontend for QEMU-based virtual machines. You can run it on Linux, FreeBSD, and **OpenBSD**.
 
-Example how to build using meson/ninja:
-
-```
-meson builddir
-cd builddir
-ninja
-./aqemu
-```
-
-I set up a [crowdfunding page for AQEMU](https://salt.bountysource.com/teams/aqemu), it will enable users to donate for the whole
-project and/or for individual issues. Please consider setting up a monthly donation.
-
-I want AQEMU to pick up steam again with your help, with the goal of making the best
-virtual machine manager GUI.
-
-Bountysource crowdfunding page for AQEMU: https://salt.bountysource.com/teams/aqemu
-
-Patreon crowdfunding page: https://www.patreon.com/tobimensch
-
-Donate via PayPal: donate2aqemu@emailn.de
-
+## Screenshot
 
 ![ScreenShot](https://i.imgur.com/PkvFUEk.png)
 
-Current stable release: https://github.com/tobimensch/aqemu/releases/tag/v0.9.2
-See the CHANGELOG for details.
+## Dependencies
 
-Upgrading from 0.8.2 is highly recommended.
+- meson
+- libvncserver 
+- qt5
+    - Qt5Core
+    - Qt5Widgets 
+    - Qt5Network
+    - Qt5Test
+    - Qt5PrintSupport
+    - Qt5DBus
 
----
+## Installation
 
-Port of AQEMU 0.8.2 from Qt4 to Qt5.
+Example of how to build using meson/ninja:
 
----
+```bash
+$ meson builddir
+$ cd builddir
+$ ninja
+$ ./aqemu
+```
 
-Use cmake to build.
+## OpenBSD
 
-Dependencies: 
- - Qt5Core
- - Qt5Widgets 
- - Qt5Network
- - Qt5Test
- - Qt5PrintSupport
- - Qt5DBus
- - LibVNCServer
+The original AQEMU by default doesn't compile under OpenBSD. Only this fork
+is capable. For more info, see the note section.
 
----
+### Compile and install under OpenBSD
 
-As an alternative to cmake the meson build system is also supported:
-https://github.com/mesonbuild/meson
-
-
-## OpenBSD dependencies
-
-Install following packages:
+First, install the needed dependencies,
 
 ```bash
 $ doas pkg_add meson libvncserver qt5
 ```
 
-## OpenBSD problem with cmake
+Then follow the installation instruction stated above.
 
-Since [OpenBSD Qt port stores the libs in a different directory](https://openports.se/x11/qt5/qtbase), the last stage,
-linking fails. In case to quickly fix until a permanent fix, edit `builddir/build.ninja`
-and add `-L /usr/local/lib/qt5` flag prior to `-lQt5Core`.
+### OpenBSD troubleshooting
+
+Since [OpenBSD Qt port stores the libs in a different directory](https://openports.pl/path/x11/qt5/qtbase),
+in case the last stage of linking fails, open the `builddir/build.ninja` file
+and make sure the `-L /usr/local/lib/qt5` flag exists before `-lQt5Core`.
+If doesn't simply add and run `ninja` once again.
+
+## Note about this fork
+
+Unfortunately, as the [original project](https://github.com/tobimensch/aqemu)
+is abandoned, I have to maintain this fork by myself. I'm neither a C++ nor
+Qt developer. Originally, I wanted to run a QEMU client on OpenBSD and ended up porting AQEMU to OpenBSD. 
+
+Any collaboration and patches are highly appreciated and always welcomed.
